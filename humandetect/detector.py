@@ -68,6 +68,16 @@ class Result:
     stats: dict = field(default_factory=dict)
     signals: dict = field(default_factory=dict)
 
+    def as_dict(self):
+        """Plain dict version, handy for json output or logging."""
+        return {
+            "score": self.score,
+            "label": self.label,
+            "reliable": self.reliable,
+            "stats": self.stats,
+            "signals": self.signals,
+        }
+
     def summary(self):
         """One line version for printing."""
         note = "" if self.reliable else " (sample is short, low confidence)"

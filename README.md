@@ -66,6 +66,12 @@ python -m humandetect essay.txt
 python -m humandetect essay.txt --verbose
 ```
 
+Or get the whole result as json, which is easier to pipe somewhere else:
+
+```bash
+python -m humandetect essay.txt --json
+```
+
 You can also pipe text in:
 
 ```bash

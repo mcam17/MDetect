@@ -10,6 +10,7 @@ Kept the argument handling manual since there are only two options and
 argparse felt like overkill for that.
 """
 
+import json
 import sys
 
 from .detector import analyze
@@ -21,6 +22,7 @@ HELP = """HumanDetect: quick check for machine written text
 
 options:
   --verbose   also print every feature and signal
+  --json      print the whole result as json, good for piping
   --help      show this text
 """
 
@@ -35,6 +37,10 @@ def run(argv=None):
     verbose = "--verbose" in argv
     if verbose:
         argv.remove("--verbose")
+
+    as_json = "--json" in argv
+    if as_json:
+        argv.remove("--json")
 
     if argv:
         path = argv[0]
@@ -53,6 +59,13 @@ def run(argv=None):
         return 1
 
     result = analyze(text)
+
+    # json mode is all or nothing, so verbose does not apply to it. The
+    # dict already carries the features and signals anyway.
+    if as_json:
+        print(json.dumps(result.as_dict(), indent=2))
+        return 0
+
     print(result.summary())
 
     if verbose:

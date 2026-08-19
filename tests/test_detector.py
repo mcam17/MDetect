@@ -4,6 +4,7 @@ Basic checks. Run them with:
     python -m unittest discover tests
 """
 
+import json
 import unittest
 
 from humandetect import analyze
@@ -73,6 +74,12 @@ class TestDetector(unittest.TestCase):
     def test_bad_input_type(self):
         with self.assertRaises(TypeError):
             analyze(1234)
+
+    def test_as_dict_round_trips_through_json(self):
+        payload = json.dumps(analyze(HUMAN_SAMPLE).as_dict())
+        loaded = json.loads(payload)
+        self.assertEqual(loaded["label"], "likely human")
+        self.assertIn("burstiness", loaded["stats"])
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ Basic checks. Run them with:
 import unittest
 
 from humandetect import analyze
+from humandetect import Detector
 from humandetect import features
 
 # Written by me, on purpose messy, with uneven sentence lengths.
@@ -38,6 +39,13 @@ class TestFeatures(unittest.TestCase):
         for value in stats.values():
             self.assertEqual(value, 0.0)
 
+    def test_quotes_are_stripped_from_words(self):
+        # Used to come back as "'hello'" and count as its own word.
+        self.assertEqual(features.words("he said 'hello' twice")[2], "hello")
+
+    def test_quoted_word_is_not_a_new_word(self):
+        self.assertEqual(features.vocabulary_richness("'a' 'a' a a"), 0.25)
+
     def test_contractions_are_counted(self):
         rate = features.contraction_rate("I don't think that's right at all")
         self.assertGreater(rate, 0)
@@ -57,6 +65,10 @@ class TestDetector(unittest.TestCase):
 
     def test_short_text_is_flagged_unreliable(self):
         self.assertFalse(analyze("Hi there.").reliable)
+
+    def test_unknown_weight_name_is_rejected(self):
+        with self.assertRaises(ValueError):
+            Detector(weights={"burstiness": 1.0, "not_a_feature": 0.5})
 
     def test_bad_input_type(self):
         with self.assertRaises(TypeError):

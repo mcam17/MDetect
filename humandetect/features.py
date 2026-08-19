@@ -49,8 +49,16 @@ def sentences(text):
 
 
 def words(text):
-    """Lowercased word list. Apostrophes stay so contractions survive."""
-    return [w.lower() for w in WORD_PATTERN.findall(text)]
+    """
+    Lowercased word list. Apostrophes stay so contractions survive.
+
+    Quote marks were being kept as part of the word, so 'hello' and hello
+    counted as two different words and every quoted contraction missed the
+    lookup table. Trim the apostrophes off the ends and drop anything that
+    is left over as an empty string.
+    """
+    found = (w.strip("'").lower() for w in WORD_PATTERN.findall(text))
+    return [w for w in found if w]
 
 
 def burstiness(text):

@@ -78,7 +78,20 @@ class Detector:
     """Wraps the weights so they can be swapped out in tests."""
 
     def __init__(self, weights=None, min_words=MIN_WORDS):
-        self.weights = dict(weights or WEIGHTS)
+        weights = dict(weights or WEIGHTS)
+
+        # A typo in a custom weight dict used to blow up much later with a
+        # bare KeyError from inside analyze, which was confusing. Catch it
+        # here instead and say which key is wrong.
+        unknown = set(weights) - set(WEIGHTS)
+        if unknown:
+            raise ValueError(
+                "unknown weight names: {}. valid names are: {}".format(
+                    ", ".join(sorted(unknown)), ", ".join(sorted(WEIGHTS))
+                )
+            )
+
+        self.weights = weights
         self.min_words = min_words
 
     def label_for(self, score):

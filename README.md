@@ -78,6 +78,23 @@ You can also pipe text in:
 echo "some text to check" | python -m humandetect
 ```
 
+## Desktop window
+
+If a terminal is not your thing, there is a small Tkinter window. Tkinter comes
+with Python, so there is still nothing to install.
+
+```bash
+python -m humandetect --gui
+```
+
+Paste text in the box or press Open file, then press Check (or Ctrl+Enter). The
+verdict shows up underneath along with every raw feature and its suspicion value.
+You can also pre-fill it from a file:
+
+```bash
+python -m humandetect essay.txt --gui
+```
+
 If you want different weights, build the detector yourself:
 
 ```python
@@ -110,6 +127,7 @@ Things I want to add next:
 * A larger and smarter stock phrase list, maybe loaded from a data file.
 * Paragraph level scoring so you can see which section looks generated.
 * A proper `pyproject.toml` so it can be installed with pip.
+* Paragraph highlighting in the desktop window, once paragraph scoring exists.
 * More test samples, ideally a small labelled corpus to tune the weights on.
 
 ## License
